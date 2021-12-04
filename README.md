@@ -19,3 +19,11 @@ Code and (particularly) learning points.
 * a list of indices for each different list had to be built, and there's always room for confusion when you are index fiddling.
 * no sneaky optimizations (avoided bit fiddling!)this time as it took me about 90 minutes to get the second part.
 * am now using listcomps profusely .. I tried the R trick of feeding a list of indices to the main list, no go. But listcomps are fine here.
+
+# Day 4
+* actually this was bingo cards, part 1 took a while longer this time
+* also there's too many for loops quite unelegant.
+* got caught with stopping filling in other cards with a number that had produced a winning card, useful for part 1 but not part 2.
+* finding the last card to win was a clever turn to the game, made this more interesting.
+* bugs crept in .. perhaps I should put in more incisive commenting, especially when the second part asks that one or two things be done in opposite manner to part 1.
+* can defintely be cleaned up. used the mask quite quite often. Should be boolean?
