@@ -26,4 +26,9 @@ Code and (particularly) learning points.
 * got caught with stopping filling in other cards with a number that had produced a winning card, useful for part 1 but not part 2.
 * finding the last card to win was a clever turn to the game, made this more interesting.
 * bugs crept in .. perhaps I should put in more incisive commenting, especially when the second part asks that one or two things be done in opposite manner to part 1.
-* can defintely be cleaned up. used the mask quite quite often. Should be boolean?
+* can definitely be cleaned up. used the mask quite quite often. Should be boolean?
+
+# Day 5
+* Moved to using regex to reading input, but found that group dict was annoyingly mixiing up order, easy labels a-d comes out as abdc or something, mad. Not dependable.
+* If yesterday was far too C-like, today was worse. A grid, jammed packed with forloops and fiddly indexing up and/or down range, very easy to amek errors.
+* however, part 2 was merely an extension of part 1, so in that sense easier than yesterday.
