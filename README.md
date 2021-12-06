@@ -37,3 +37,5 @@ Code and (particularly) learning points.
 * I decide to move to C, all these puzzles seem to be
 * forgot about my overly clean normalize function ... I really should use it only at end of big ops. Kept getting valgrind errors (a separate problem really)
 * the "c" program is the part 1 program, it wants string on cmdline. A bit limiting though xargs could help
+* this time part 1 clearly led us up garden path with regard to implementation, it would smash memory in part 2!
+* actually, preventing this was easy. Most of my time was spent cleaining up my old c code.

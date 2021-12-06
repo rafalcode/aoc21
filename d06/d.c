@@ -44,6 +44,22 @@ void dayvec(av_c *avc)
     return;
 }
 
+void dayvec2(size_t *aa)
+{
+    size_t tmp;
+    tmp=aa[0];
+    aa[0]=aa[1];
+    aa[1]=aa[2];
+    aa[2]=aa[3];
+    aa[3]=aa[4];
+    aa[4]=aa[5];
+    aa[5]=aa[6];
+    aa[6]=aa[7]+tmp;
+    aa[7]=aa[8];
+    aa[8]=tmp;
+    return;
+}
+
 void prtavec(av_c *avc)
 {
     size_t i;
@@ -85,7 +101,7 @@ int main(int argc, char *argv[])
 	if(argc != 2)
 		prtusage();
 
-    size_t i;
+    size_t i, j;
 	char t[]=",";
     av_c *avc=crea_avc(GBUF);
 	char *tk=strtok(argv[1], t);
@@ -98,12 +114,24 @@ int main(int argc, char *argv[])
         CONDREALLOC(avc->vsz, avc->vbf, GBUF, avc->v, size_t);
         avc->v[avc->vsz++]=atol(tk);
 	}
-    for(i=0;i<256;++i) {
-        dayvec(avc);
-        // prtavec2(avc, i+1);
+    size_t *aa=calloc(9, sizeof(size_t));
+    for(i=0;i<avc->vsz;++i) 
+        aa[avc->v[i]]++;
+
+    size_t sumaa=0;
+    int hasta=256;
+    for(i=0;i<hasta;++i) {
+        dayvec2(aa);
+        sumaa=0;
+        if(i==hasta-1) {
+            for(j=0;j<9;++j) {
+                sumaa+=aa[j];
+                // printf("aa[%zu]=%zu ", j, aa[j]);
+            }
+            printf("hasta %i : sumaa=%zu\n", hasta, sumaa); 
+        }
     }
-    norm_avc(avc);
-    printf("aft 256 days = %zu\n", avc->vsz); 
     free_avc(avc);
+    free(aa);
     return 0;
 }
