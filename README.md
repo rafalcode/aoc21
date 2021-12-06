@@ -32,3 +32,8 @@ Code and (particularly) learning points.
 * Moved to using regex to reading input, but found that group dict was annoyingly mixiing up order, easy labels a-d comes out as abdc or something, mad. Not dependable.
 * If yesterday was far too C-like, today was worse. A grid, jammed packed with forloops and fiddly indexing up and/or down range, very easy to amek errors.
 * however, part 2 was merely an extension of part 1, so in that sense easier than yesterday.
+
+# Day 6 lanternfish
+* I decide to move to C, all these puzzles seem to be
+* forgot about my overly clean normalize function ... I really should use it only at end of big ops. Kept getting valgrind errors (a separate problem really)
+* the "c" program is the part 1 program, it wants string on cmdline. A bit limiting though xargs could help
