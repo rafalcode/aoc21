@@ -98,12 +98,12 @@ int main(int argc, char *argv[])
         CONDREALLOC(avc->vsz, avc->vbf, GBUF, avc->v, size_t);
         avc->v[avc->vsz++]=atol(tk);
 	}
-    for(i=0;i<18;++i) {
+    for(i=0;i<256;++i) {
         dayvec(avc);
         // prtavec2(avc, i+1);
     }
     norm_avc(avc);
-    printf("aft 18 days = %zu\n", avc->vsz); 
+    printf("aft 256 days = %zu\n", avc->vsz); 
     free_avc(avc);
     return 0;
 }
