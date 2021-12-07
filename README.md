@@ -39,3 +39,10 @@ Code and (particularly) learning points.
 * the "c" program is the part 1 program, it wants string on cmdline. A bit limiting though xargs could help
 * this time part 1 clearly led us up garden path with regard to implementation, it would smash memory in part 2!
 * actually, preventing this was easy. Most of my time was spent cleaining up my old c code.
+
+# Day 7: position tiny crab submarines in one horizontal position at lowest movement cost
+* Quite an easy one, more like the first two days.
+* heavy use of forloops continues.
+* Even the second part hardly needed much change ... the n*(n+1)/2 formula coming in handy though I alwways seem to think it's n*(n-1)/2
+* Not as interesting as the last two days ... the fast big whale and blasting the ocean floor story very weak.
+* got error due to my using unsigned char in vector (which actually was abandoned yesterday and was not right solution).
