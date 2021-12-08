@@ -6,9 +6,11 @@ DBG2CFLAGS=-g -Wall -DDBG2
 TDBGCFLAGS=-g -Wall -DDBG # True debug flags!
 
 LIBS=-lgsl -lgslcblas -lm
-EXES=grd
+EXES=grd grd2
 
 grd: grd.c
+	${CC} ${DBGCFLAGS} -o $@ $^
+grd2: grd2.c
 	${CC} ${DBGCFLAGS} -o $@ $^
 
 .PHONY: clean

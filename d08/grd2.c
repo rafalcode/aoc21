@@ -257,181 +257,180 @@ int main(int argc, char *argv[])
     // printf("sum=%i\n",sum); 
     // 1 and 7
     // 1 and 7
-    char lets[8]="abcdefg";
     int *ns=malloc(10*sizeof(int));
+    int *ns2=malloc(10*sizeof(int));
     for(i=0;i<10;++i) 
         ns[i]=-1;
-    i=0; // line 0 for testing
-    for(j=0;j<10;++j) {
-        switch(aawc->aaw[i]->aw[j]->lp1) {
-            case 3:
-                printf("%s\n", aawc->aaw[i]->aw[j]->w);
-                ns[1]=j; break;
-            case 4:
-                ns[7]=j; break;
-            case 5:
-                ns[4]=j; break;
-            case 8:
-                ns[8]=j; break;
-            default:
-                break;
-        }
-    }
-    for(j=0;j<10;++j)
-        printf("%i ", ns[j]);
-    printf("\n"); 
+    // i=0; // line 0 for testing
+    int *tn=calloc(5, sizeof(int));
+    int l0, s0, jj;
+    unsigned char *m=malloc(3*sizeof(unsigned char));
+    unsigned char *m5=malloc(5*sizeof(unsigned char));
+    int nu, sumnu=0;
+    int ii, s2, s3, s9, s6;
+    for(i=0;i<aawc->numl;++i) {
 
-    // try comparing pos 1 and pos 7
-    unsigned char m[3]={0};
-    for(k=0;k<2;++k)
-        for(j=0;j<3;++j) {
-            if(aawc->aaw[i]->aw[ns[1]]->w[k] == aawc->aaw[i]->aw[ns[7]]->w[j]) {
-                m[j]=1;
-                break;
+        for(j=0;j<10;++j) {
+            switch(aawc->aaw[i]->aw[j]->lp1) {
+                case 3:
+                    // printf("%s\n", aawc->aaw[i]->aw[j]->w);
+                    ns[1]=j; break;
+                case 4:
+                    ns[7]=j; break;
+                case 5:
+                    ns[4]=j; break;
+                case 8:
+                    ns[8]=j; break;
+                default:
+                    break;
             }
         }
-    for(k=0;k<3;++k) {
-        // printf("%i", (int)m[i]);
-       if(!m[k])
-           lets[0]= aawc->aaw[i]->aw[ns[7]]->w[k];
-    }
 
-    // identify 2 via 4 with whom (of the 3) only 2 matches
-    unsigned char m5[5]={0};
-    int ii, s2, s3;
-    for(j=0;j<10;++j) {
-        switch(aawc->aaw[i]->aw[j]->lp1) {
-            case 3: case 4: case 5: case 8:
-                break;
-            case 6:
-                s2=0;
-                for(k=0;k<4;++k) {
-                    for(ii=0;ii<5;++ii) {
-                        if(aawc->aaw[i]->aw[ns[4]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
-                            s2++;
-                            break;
-                        }
-                    }
-                }
-                if(s2==2) {
-                    ns[2]=j;
+        // try comparing pos 1 and pos 7
+        // memset(m, 0, 3*sizeof(unsigned char));
+        // for(k=0;k<2;++k)
+        //     for(j=0;j<3;++j) {
+        //         if(aawc->aaw[i]->aw[ns[1]]->w[k] == aawc->aaw[i]->aw[ns[7]]->w[j]) {
+        //             m[j]=1;
+        //             break;
+        //         }
+        //     }
+        // for(k=0;k<3;++k) {
+        //     // printf("%i", (int)m[i]);
+        //     if(!m[k])
+        //         lets[0]= aawc->aaw[i]->aw[ns[7]]->w[k];
+        // }
+
+        // identify 2 via 4 with whom (of the 3) only 2 matches
+        memset(m5, 0, 5*sizeof(unsigned char));
+        for(j=0;j<10;++j) {
+            switch(aawc->aaw[i]->aw[j]->lp1) {
+                case 3: case 4: case 5: case 8:
                     break;
-                }
-        }
-    }
-    // now1 will only match 3 twice, and remaining 5 segment number must be 5
-    for(j=0;j<10;++j) {
-        switch(aawc->aaw[i]->aw[j]->lp1) {
-            case 3: case 4: case 5: case 8:
-                break;
-            case 6:
-                if(j==ns[2])
-                    continue;
-                s3=0;
-                for(k=0;k<2;++k) {
-                    for(ii=0;ii<5;++ii) {
-                        if(aawc->aaw[i]->aw[ns[1]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
-                            s3++;
-                            break;
+                case 6:
+                    s2=0;
+                    for(k=0;k<4;++k) {
+                        for(ii=0;ii<5;++ii) {
+                            if(aawc->aaw[i]->aw[ns[4]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
+                                s2++;
+                                break;
+                            }
                         }
                     }
-                }
-                if(s3==2) {
-                    ns[3]=j;
-                } else
-                    ns[5]=j;
-        }
-    }
-    // printf("2 is word pos %i\n", ns[2]);
-    // printf("3 is word pos %i\n", ns[3]);
-    // printf("5 is word pos %i\n", ns[5]);
-    // now3 will only match 3 twice, and remaining 5 segment number must be 5
-    int s9=0;
-    for(j=0;j<10;++j) {
-        switch(aawc->aaw[i]->aw[j]->lp1) {
-            case 3: case 4: case 5: case 8: case 6:
-                break;
-            case 7:
-                // of the 3 6seg numbers, only 3 will match 9 5 times.
-                s9=0;
-                for(k=0;k<5;++k) {
-                    for(ii=0;ii<6;++ii) {
-                        if(aawc->aaw[i]->aw[ns[3]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
-                            s9++;
-                            break;
-                        }
-                    }
-                }
-                if(s9==5)
-                    ns[9]=j;
-        }
-    }
-    printf("9 is word pos %i\n", ns[9]);
-    int s6=0;
-    for(j=0;j<10;++j) {
-        switch(aawc->aaw[i]->aw[j]->lp1) {
-            case 3: case 4: case 5: case 8: case 6:
-                break;
-            case 7:
-                if(j==ns[9])
-                    continue;
-                // of the 2 remaining (less 9) 6seg numbers, only 5 will match 6 5 times.
-                s6=0;
-                for(k=0;k<5;++k) {
-                    for(ii=0;ii<6;++ii) {
-                        if(aawc->aaw[i]->aw[ns[5]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
-                            s6++;
-                            break;
-                        }
-                    }
-                }
-                if(s6==5) {
-                    ns[6]=j;
-                } else
-                    ns[0]=j;
-        }
-    }
-    //need to render for problem exposition.
-    int ns2[10]={0};
-    for(j=0;j<10;++j)
-        ns2[ns[j]]=j;
-
-    for(j=0;j<10;++j)
-        printf("%i ", ns[j]);
-    printf("\n"); 
-    for(j=0;j<10;++j)
-        printf("%i ", ns2[j]);
-    printf("\n"); 
-
-    // now identify number on last line
-    int tn[4]={0};
-    int l0, s0, jj;
-    for(j=11;j<15;++j) {
-        l0=aawc->aaw[i]->aw[j]->lp1;
-        for(k=0;k<10;++k) {
-            if(aawc->aaw[i]->aw[k]->lp1 != l0)
-                continue;
-            s0=0;
-            printf("%s vs %s\n", aawc->aaw[i]->aw[k]->w, aawc->aaw[i]->aw[j]->w);
-            for(ii=0;ii<l0-1;++ii)
-                for(jj=0;jj<l0-1;++jj)
-                    if(aawc->aaw[i]->aw[k]->w[jj] == aawc->aaw[i]->aw[j]->w[ii]) {
-                        s0++;
+                    if(s2==2) {
+                        ns[2]=j;
                         break;
                     }
-            if(s0==l0-1)
-                tn[j-11]=ns2[k];
-            else
-                break;
+            }
         }
+        // now1 will only match 3 twice, and remaining 5 segment number must be 5
+        for(j=0;j<10;++j) {
+            switch(aawc->aaw[i]->aw[j]->lp1) {
+                case 3: case 4: case 5: case 8:
+                    break;
+                case 6:
+                    if(j==ns[2])
+                        continue;
+                    s3=0;
+                    for(k=0;k<2;++k) {
+                        for(ii=0;ii<5;++ii) {
+                            if(aawc->aaw[i]->aw[ns[1]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
+                                s3++;
+                                break;
+                            }
+                        }
+                    }
+                    if(s3==2) {
+                        ns[3]=j;
+                    } else
+                        ns[5]=j;
+            }
+        }
+        s9=0;
+        for(j=0;j<10;++j) {
+            switch(aawc->aaw[i]->aw[j]->lp1) {
+                case 3: case 4: case 5: case 8: case 6:
+                    break;
+                case 7:
+                    // of the 3 6seg numbers, only 3 will match 9 5 times.
+                    s9=0;
+                    for(k=0;k<5;++k) {
+                        for(ii=0;ii<6;++ii) {
+                            if(aawc->aaw[i]->aw[ns[3]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
+                                s9++;
+                                break;
+                            }
+                        }
+                    }
+                    if(s9==5)
+                        ns[9]=j;
+            }
+        }
+        s6=0;
+        for(j=0;j<10;++j) {
+            switch(aawc->aaw[i]->aw[j]->lp1) {
+                case 3: case 4: case 5: case 8: case 6:
+                    break;
+                case 7:
+                    if(j==ns[9])
+                        continue;
+                    // of the 2 remaining (less 9) 6seg numbers, only 5 will match 6 5 times.
+                    s6=0;
+                    for(k=0;k<5;++k) {
+                        for(ii=0;ii<6;++ii) {
+                            if(aawc->aaw[i]->aw[ns[5]]->w[k] == aawc->aaw[i]->aw[j]->w[ii]) {
+                                s6++;
+                                break;
+                            }
+                        }
+                    }
+                    if(s6==5) {
+                        ns[6]=j;
+                    } else
+                        ns[0]=j;
+            }
+        }
+        //need to reverse indices for problem exposition.
+        for(j=0;j<10;++j)
+            ns2[ns[j]]=j;
+
+        // now identify number on last line
+        for(j=11;j<15;++j) {
+            l0=aawc->aaw[i]->aw[j]->lp1;
+            // printf("trying: %s  ..... \n", aawc->aaw[i]->aw[j]->w);
+            for(k=0;k<10;++k) {
+                if(aawc->aaw[i]->aw[k]->lp1 != l0) {
+//                    printf("skip: %s\n", aawc->aaw[i]->aw[k]->w);
+                    continue;
+                }
+                s0=0;
+                // printf("%s vs %s\n", aawc->aaw[i]->aw[k]->w, aawc->aaw[i]->aw[j]->w);
+                for(ii=0;ii<(l0-1);++ii)
+                    for(jj=0;jj<(l0-1);++jj)
+                        if(aawc->aaw[i]->aw[k]->w[jj] == aawc->aaw[i]->aw[j]->w[ii]) {
+                            s0++;
+                            break;
+                        }
+                if(s0==(l0-1)) {
+                    // printf("SUCCEEDED: %s vs %s i.e. num %i\n", aawc->aaw[i]->aw[k]->w, aawc->aaw[i]->aw[j]->w, ns2[k]);
+                    tn[j-11]=ns2[k];
+                    break;
+                }
+            }
+        }
+        nu=1000*tn[0]+100*tn[1]+10*tn[2]+tn[3];
+        // printf("nu is %i ", nu);
+        sumnu+=nu;
     }
-    for(j=0;j<4;++j) 
-        printf("%i\n", tn[j]); 
-    printf("\n"); 
+    printf("total of all reconnected numbers=%i\n", sumnu); 
 
 
     free_aawc(&aawc);
     free(ns);
+    free(ns2);
+    free(m);
+    free(m5);
+    free(tn);
 
     return 0;
 }
