@@ -249,6 +249,13 @@ int main(int argc, char *argv[])
     // prtaawcplain(aawc); // printout original text as well as you can.
 #endif
     // printf("Numlines: %zu\n", aawc->numl); 
+    int i, j, sum =0;
+    for(i=0;i<aawc->numl;++i)
+        for(j=11;j<15;++j)    
+            if((aawc->aaw[i]->aw[j]->lp1 == 3) | (aawc->aaw[i]->aw[j]->lp1 == 4) | (aawc->aaw[i]->aw[j]->lp1 == 5) | (aawc->aaw[i]->aw[j]->lp1 == 8))
+                sum++;
+    printf("sum=%i\n",sum); 
+
 
     free_aawc(&aawc);
 
