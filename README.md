@@ -46,3 +46,9 @@ Code and (particularly) learning points.
 * Even the second part hardly needed much change ... the n*(n+1)/2 formula coming in handy though I alwways seem to think it's n*(n-1)/2
 * Not as interesting as the last two days ... the fast big whale and blasting the ocean floor story very weak.
 * got error due to my using unsigned char in vector (which actually was abandoned yesterday and was not right solution).
+
+# Day 8 mixed up digit display
+* part 1 was very easy, but part 2 wa quite difficult and demanded alot of thinking.
+* a key was not finding letter to letter correspondance but finding unique sums for matches of one number in another of certain length.
+* Once again done in C ... though I'd say the python Count() fn would have helped a good deal.
+* More or less done organically, not much systematic thinking I'm afraid.
