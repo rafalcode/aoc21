@@ -6,7 +6,7 @@ DBG2CFLAGS=-g -Wall -DDBG2
 TDBGCFLAGS=-g -Wall -DDBG # True debug flags!
 
 LIBS=-lgsl -lgslcblas -lm
-EXES=p1 grd2 p2
+EXES=p1 grd2 p2 p3 p4
 
 p1: p1.c
 	${CC} ${DBGCFLAGS} -o $@ $^
@@ -16,6 +16,9 @@ p2: p2.c
 	${CC} ${DBGCFLAGS} -o $@ $^
 p3: p3.c
 	${CC} ${DBGCFLAGS} -o $@ $^
+p4: p4.c
+	${CC} ${DBGCFLAGS} -o $@ $^
+
 
 .PHONY: clean
 
