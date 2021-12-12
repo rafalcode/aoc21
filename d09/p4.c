@@ -31,11 +31,41 @@ void memexact_avc(av_c *avc)
     return;
 }
 
+void lesslast_avc(av_c *avc)
+{
+    /* somewhat trivial, but idea is that, as avc is a container, it can be re-alloced inside a function */
+    if(avc->vsz>1) {
+        avc->vsz--;
+        // avc->m=realloc(avc->m, avc->vsz*sizeof(int));
+        // avc->n=realloc(avc->n, avc->vsz*sizeof(int));
+    } else {
+        avc->vsz=0;
+    }
+    return;
+}
+
 void free_avc(av_c *avc)
 {
     free(avc->m);
     free(avc->n);
     free(avc);
+    return;
+}
+
+void prt_avc(av_c *avc)
+{
+    int i;
+    for(i=0;i<avc->vsz;++i) 
+        printf((i==avc->vsz-1)?"(%i,%i)\n":"(%i,%i) ", avc->m[i], avc->n[i]);
+    return;
+}
+
+void prt_avc2(av_c *avc)
+{
+    int i;
+    printf("sz%i) ", avc->vsz);
+    for(i=0;i<avc->vsz;++i) 
+        printf((i==avc->vsz-1)?"(%i,%i)\n":"(%i,%i) ", avc->m[i], avc->n[i]);
     return;
 }
 
@@ -228,6 +258,70 @@ av_c *glow0(aaw_c *aawc) /* print line and word details, but not the words thems
     return avc;
 }
 
+void glow2(aaw_c *aawc, av_c *avc)
+{
+    int cc, rr, j, i;
+    int *a=malloc(4*sizeof(int));
+    av_c *av2=NULL;
+    for(j=0;j<avc->vsz;++j) {
+        av2=crea_avc(GBUF);
+        cc=avc->m[j]; // aka. x
+        rr=avc->n[j]; //aka y
+        aawc->aaw[rr]->aw[0]->w[cc]='9'; // clobber
+        a[0]=(rr>0)?aawc->aaw[rr-1]->aw[0]->w[cc]-48:9;
+        if(a[0]!=9)
+            app_avc(av2, cc, rr-1);
+        if(rr>0)
+            aawc->aaw[rr-1]->aw[0]->w[cc]='9'; // clobb
+        a[2]=(rr<aawc->numl-1)?aawc->aaw[rr+1]->aw[0]->w[cc]-48:9;
+        if(a[2]!=9)
+            app_avc(av2, cc, rr+1);
+        if(rr<aawc->numl-1)
+            aawc->aaw[rr+1]->aw[0]->w[cc]='9';
+        a[3]=(cc>0)?aawc->aaw[rr]->aw[0]->w[cc-1]-48:9;
+        if(a[3]!=9)
+            app_avc(av2, cc-1, rr);
+        if(cc>0)
+            aawc->aaw[rr]->aw[0]->w[cc-1]='9';
+        a[1]=(cc<aawc->aaw[rr]->aw[0]->lp1-2)?aawc->aaw[rr]->aw[0]->w[cc+1]-48:9;
+        if(a[1]!=9)
+            app_avc(av2, cc+1, rr);
+        if(cc<aawc->aaw[rr]->aw[0]->lp1-2)
+            aawc->aaw[rr]->aw[0]->w[cc+1]='9';
+        for(i=0;i<av2->vsz;++i) {
+            cc=av2->m[i];
+            rr=av2->n[i];
+            printf("trying (%i,%i)\n", cc, rr); 
+            // lesslast_avc(av2);
+            aawc->aaw[rr]->aw[0]->w[cc]='9'; // clobber
+            a[0]=(rr>0)?aawc->aaw[rr-1]->aw[0]->w[cc]-48:9;
+            if(a[0]!=9)
+                app_avc(av2, cc, rr-1);
+            if(rr>0)
+                aawc->aaw[rr-1]->aw[0]->w[cc]='9';
+            a[2]=(rr<aawc->numl-1)?aawc->aaw[rr+1]->aw[0]->w[cc]-48:9;
+            if(a[2]!=9)
+                app_avc(av2, cc, rr+1);
+            if(rr<aawc->numl-1)
+                aawc->aaw[rr+1]->aw[0]->w[cc]='9';
+            a[3]=(cc>0)?aawc->aaw[rr]->aw[0]->w[cc-1]-48:9;
+            if(a[3]!=9)
+                app_avc(av2, cc-1, rr);
+            if(cc>0)
+                aawc->aaw[rr]->aw[0]->w[cc-1]='9';
+            a[1]=(cc<aawc->aaw[rr]->aw[0]->lp1-2)?aawc->aaw[rr]->aw[0]->w[cc+1]-48:9;
+            if(a[1]!=9)
+                app_avc(av2, cc+1, rr);
+            if(cc<aawc->aaw[rr]->aw[0]->lp1-2)
+                aawc->aaw[rr]->aw[0]->w[cc+1]='9';
+        }
+        prt_avc2(av2);
+        free_avc(av2);
+    }
+    free(a);
+    return;
+}
+
 aaw_c *processinpf(char *fname)
 {
     /* declarations */
@@ -299,10 +393,11 @@ int main(int argc, char *argv[])
 
     aaw_c *aawc=processinpf(argv[1]);
     av_c *avc=glow0(aawc);
-    int i;
-    for(i=0;i<avc->vsz;++i)
-        printf("(%i,%i) ", avc->m[i], avc->n[i]);
-    printf("\n"); 
+    prt_avc(avc);
+    glow2(aawc, avc);
+    // for(i=0;i<avc->vsz;++i)
+    //    printf("(%i,%i) ", avc->m[i], avc->n[i]);
+    // printf("\n"); 
 
     free_aawc(&aawc);
     memexact_avc(avc);
