@@ -4,6 +4,21 @@
 #include<string.h>
 #include "p4.h"
 
+void optis(av_c *avc) // order only on m members
+{
+    int i, j, t, t2;
+    for (i = 1; i < avc->vsz; i++) {
+        t = avc->m[i];
+        t2 = avc->n[i];
+        for (j = i; ((j > 0) && (avc->m[j-1]) < t); j--) {
+            avc->m[j] = avc->m[j-1];
+            avc->n[j] = avc->n[j-1];
+        }
+        avc->m[j] = t;
+        avc->n[j] = t2;
+    }
+}
+
 av_c *crea_avc(int vbf)
 {
     av_c *avc=malloc(sizeof(av_c));
@@ -66,6 +81,18 @@ void prt_avc2(av_c *avc)
     printf("sz%i) ", avc->vsz);
     for(i=0;i<avc->vsz;++i) 
         printf((i==avc->vsz-1)?"(%i,%i)\n":"(%i,%i) ", avc->m[i], avc->n[i]);
+    return;
+}
+
+void prt_avc4(av_c *avc)
+{
+    printf("Top 3 size=%i\n", avc->m[0]*avc->m[1]*avc->m[2]);
+    return;
+}
+
+void prt_avc3(av_c *avc)
+{
+    printf("Basin size=%i\n", avc->vsz+1);
     return;
 }
 
@@ -263,6 +290,7 @@ void glow2(aaw_c *aawc, av_c *avc)
     int cc, rr, j, i;
     int *a=malloc(4*sizeof(int));
     av_c *av2=NULL;
+    av_c *av3=crea_avc(GBUF);
     for(j=0;j<avc->vsz;++j) {
         av2=crea_avc(GBUF);
         cc=avc->m[j]; // aka. x
@@ -291,8 +319,7 @@ void glow2(aaw_c *aawc, av_c *avc)
         for(i=0;i<av2->vsz;++i) {
             cc=av2->m[i];
             rr=av2->n[i];
-            printf("trying (%i,%i)\n", cc, rr); 
-            // lesslast_avc(av2);
+            // lesslast_avc(av2); 
             aawc->aaw[rr]->aw[0]->w[cc]='9'; // clobber
             a[0]=(rr>0)?aawc->aaw[rr-1]->aw[0]->w[cc]-48:9;
             if(a[0]!=9)
@@ -315,10 +342,15 @@ void glow2(aaw_c *aawc, av_c *avc)
             if(cc<aawc->aaw[rr]->aw[0]->lp1-2)
                 aawc->aaw[rr]->aw[0]->w[cc+1]='9';
         }
-        prt_avc2(av2);
+        prt_avc3(av2);
+        app_avc(av3, av2->vsz+1, 0);
         free_avc(av2);
     }
+    prt_avc2(av3);
+    optis(av3);
+    prt_avc4(av3);
     free(a);
+    free_avc(av3);
     return;
 }
 
