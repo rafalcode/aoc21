@@ -52,3 +52,12 @@ Code and (particularly) learning points.
 * a key was not finding letter to letter correspondance but finding unique sums for matches of one number in another of certain length.
 * Once again done in C ... though I'd say the python Count() fn would have helped a good deal.
 * More or less done organically, not much systematic thinking I'm afraid.
+
+# Day 11, flashings
+* This one took me a very long time, and I battled with this idea of propagation
+* Like day 09, I did take recourse to getting hints, but actually in parallel I began
+* the main issue for propagation is that a step is only finished when it's total flashing has finished. So "your function" should return numflashes=zero. (while not zero is required).
+* otherwise I had a very thorny time equating my "single pass" output (which I tried in reverse, and many other ways) to what was required.
+* I often fell to thinking that they've made a mistake ... which is possible but the correction would have come extremely quickly.
+* so yes, the propagation issue had me fairly flustered, I need to remember it's a question of couting the events and waiting till they go to zero.
+.
