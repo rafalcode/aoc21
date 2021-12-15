@@ -66,3 +66,8 @@ Code and (particularly) learning points.
 * this was nasty not in the coding sense, but because it allowed some confusion between columns and rows, and the simple but often elusive calculation of the folded indices.
 * Also the simple example was not hugely difficult to get right, but there was a good chance of not getting the part 1 right.
 
+# Day 14, polymer extensions.
+* part 1 straight forward but it's clear I can't use my c libraries, they are just not reusable in that I always have to look for them!
+* part 2 though is the infamous AOC massive number issue ... they love putting it in as part 2, so that you almost have to rewrite part1 from scratch with a different concept.
+
+# Day 15, path through one of these single digit 10x10 matrices, like the flashings and basins
