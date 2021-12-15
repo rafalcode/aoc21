@@ -69,5 +69,7 @@ Code and (particularly) learning points.
 # Day 14, polymer extensions.
 * part 1 straight forward but it's clear I can't use my c libraries, they are just not reusable in that I always have to look for them!
 * part 2 though is the infamous AOC massive number issue ... they love putting it in as part 2, so that you almost have to rewrite part1 from scratch with a different concept.
+* talk about rewriting part 1 for part 2: it really required a different way of thinking. Unfort too much time with my C.
+* nevertheless, there are uber-language concepts which need getting around.
 
 # Day 15, path through one of these single digit 10x10 matrices, like the flashings and basins

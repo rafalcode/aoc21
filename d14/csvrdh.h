@@ -37,6 +37,8 @@ typedef struct /* aw_c: array of words container */
     w_c **aw;
     unsigned ab;
     unsigned al;
+    size_t cou;
+    size_t cold;
 } aw_c;
 
 typedef struct /* aaw_c: array of array of words container */

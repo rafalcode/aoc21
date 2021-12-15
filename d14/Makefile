@@ -5,9 +5,11 @@ DBGCFLAGS=-g -Wall -DDBG
 DBG2CFLAGS=-g -Wall -DDBG2
 TDBGCFLAGS=-g -Wall -DDBG # True debug flags!
 
-EXES=p1 p2 p3 p1a p1b rdin
+EXES=p1 p2 p3 p1a p1b rdin rd2
 
 rdin: rdin.c
+	${CC} ${DBGCFLAGS} -o $@ $^
+rd2: rd2.c
 	${CC} ${DBGCFLAGS} -o $@ $^
 p1: p1.c
 	${CC} ${DBGCFLAGS} -o $@ $^

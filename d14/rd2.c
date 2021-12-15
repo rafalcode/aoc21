@@ -5,25 +5,32 @@
 #include "csvrdh.h"
 
 #define GBUF 5
-#define CONDREALLOCW(x, b, c, a, t); \
+#define CONDREALLOCMN(x, b, c, m, n, t); \
     if((x)>=((b)-1)) { \
         (b) += (c); \
-        (a)=realloc((a), (b)*sizeof(t)); \
+        (m)=realloc((m), (b)*sizeof(t)); \
+        (n)=realloc((n), (b)*sizeof(t)); \
     }
+
 
 typedef struct /* av_c, a vector fo simple integers*/
 {
-    size_t vbf, vsz;
-    char *v;
+    size_t vbf, vsz, *m, *n;
 } av_c;
 
-void prt_avc(av_c *avc)
+void memexact_avc(av_c *avc)
 {
-    size_t i;
-    printf("av_c of size %zu\n", avc->vsz);
-    for(i=0;i<avc->vsz;++i)
-        putchar(avc->v[i]);
-    printf("\n"); 
+    /* somewhat trivial, but idea is that, as avc is a container, it can be re-alloced inside a function */
+    avc->m=realloc(avc->m, avc->vsz*sizeof(size_t));
+    avc->n=realloc(avc->n, avc->vsz*sizeof(size_t));
+    return;
+}
+
+void free_avc(av_c *avc)
+{
+    free(avc->m);
+    free(avc->n);
+    free(avc);
     return;
 }
 
@@ -31,30 +38,28 @@ av_c *crea_avc(size_t vbf)
 {
     av_c *avc=malloc(sizeof(av_c));
     avc->vbf=vbf;
-    avc->v=malloc(avc->vbf*sizeof(char));
+    avc->m=malloc(avc->vbf*sizeof(size_t));
+    avc->n=malloc(avc->vbf*sizeof(size_t));
     avc->vsz=0;
     return avc;
 }
 
-void app_avc(av_c *avc, char mychar)
+void app_avc(av_c *avc, size_t m, size_t n)
 {
     /* somewhat trivial, but idea is that, as avc is a container, it can be re-alloced inside a function */
-    CONDREALLOCW(avc->vsz, avc->vbf, GBUF, avc->v, char);
-    avc->v[avc->vsz++]=mychar;
+    CONDREALLOCMN(avc->vsz, avc->vbf, GBUF, avc->m, avc->n, size_t);
+    avc->m[avc->vsz]=m;
+    avc->n[avc->vsz++]=n;
     return;
 }
 
-void memexact_avc(av_c *avc)
+void prt_avc(av_c *avc)
 {
-    /* somewhat trivial, but idea is that, as avc is a container, it can be re-alloced inside a function */
-    avc->v=realloc(avc->v, avc->vsz*sizeof(int));
-    return;
-}
-
-void free_avc(av_c *avc)
-{
-    free(avc->v);
-    free(avc);
+    int i;
+    printf("av_c of size %zu\n", avc->vsz);
+    for(i=0;i<avc->vsz;++i)
+        printf("(%zu,%zu) ", avc->n[i], avc->m[i]);
+    printf("\n"); 
     return;
 }
 
@@ -123,6 +128,14 @@ snodm **hashnam(aaw_c *aawc, unsigned tsz)
     return stab;
 }
 
+void prtaawc2(aaw_c *aawc) /* print line and word details, but not the words themselves */
+{
+    int i, j;
+    for(i=2;i<aawc->numl;++i) {
+            printf("%s %s %zu %zu\n", aawc->aaw[i]->aw[0]->w, aawc->aaw[i]->aw[2]->w, aawc->aaw[i]->cou, aawc->aaw[i]->cold);
+    }
+}
+
 int mu_nam(aaw_c *aawc, snodm **stam, unsigned tsz, char *w)
 {
     snodm *tsnod2;
@@ -146,26 +159,83 @@ int mu_nam(aaw_c *aawc, snodm **stam, unsigned tsz, char *w)
     return 1;
 }
 
-char mu2(aaw_c *aawc, snodm **stam, unsigned tsz, char *w)
+void mu3(aaw_c *aawc, snodm **stam, unsigned tsz, char *w)
 {
     snodm *tsnod2;
     unsigned tint;
 
     tint=hashit(w, tsz); // hash the snpname
     if( stam[tint] == NULL ) {
-        printf("nomatch %s\n", w);
-        return '\0';
+        printf("nomatch %s, not allowed in this program\n", w);
+        exit(EXIT_FAILURE);
     }
 
     tsnod2=stam[tint];
     while( (tsnod2 != NULL) ) {
         if(!strcmp(tsnod2->aw->aw[0]->w, w)) {
-            return tsnod2->aw->aw[2]->w[0];
+//            printf("Match: %s with %s\n", tsnod2->aw->aw[0]->w, w);
+            tsnod2->aw->cou++;
+            return;
         }
         tsnod2=tsnod2->n;
     }
-    printf("nomatch %s\n", w);
-    return '\0';
+    return;
+}
+
+void mu3a(aaw_c *aawc, snodm **stam, unsigned tsz, char *w, size_t cou)
+{
+    snodm *tsnod2;
+    unsigned tint;
+
+    tint=hashit(w, tsz); // hash the snpname
+    if( stam[tint] == NULL ) {
+        printf("nomatch %s, not allowed in this program\n", w);
+        exit(EXIT_FAILURE);
+    }
+
+    tsnod2=stam[tint];
+    while( (tsnod2 != NULL) ) {
+        if(!strcmp(tsnod2->aw->aw[0]->w, w)) {
+//            printf("Match: %s with %s\n", tsnod2->aw->aw[0]->w, w);
+            tsnod2->aw->cou+=cou;
+            return;
+        }
+        tsnod2=tsnod2->n;
+    }
+    return;
+}
+
+void mu5a(aaw_c *aawc, snodm **stam, unsigned tsz)
+{
+
+    int i, j;
+    size_t diff;
+    char t[3]={0};
+    char t2[3]={0};
+    av_c *avc=crea_avc(GBUF);
+    for(i=2;i<aawc->numl;++i) {
+        diff = aawc->aaw[i]->cou - aawc->aaw[i]->cold;
+        // printf("diff on %s produces 1x %c%c and 1x %c%c\n", aawc->aaw[i]->aw[0]->w, aawc->aaw[i]->aw[0]->w[0], aawc->aaw[i]->aw[2]->w[0], aawc->aaw[i]->aw[2]->w[0], aawc->aaw[i]->aw[0]->w[1]);
+        if(diff) {
+            app_avc(avc, diff, i);
+            aawc->aaw[i]->cold = aawc->aaw[i]->cou;
+        }
+    }
+    prt_avc(avc);
+    for(i=0;i<avc->vsz;++i) {
+        // printf("cou=%zu vs. cold=%zu @%s\n", aawc->aaw[i]->cou, aawc->aaw[i]->cold, aawc->aaw[i]->aw[0]->w);
+        t[0]=aawc->aaw[avc->n[i]]->aw[0]->w[0];
+        t[1]=aawc->aaw[avc->n[i]]->aw[2]->w[0];
+        t2[0]=aawc->aaw[avc->n[i]]->aw[2]->w[0];
+        t2[1]=aawc->aaw[avc->n[i]]->aw[0]->w[1];
+        mu3a(aawc, stam, tsz, t, avc->m[i]);
+        mu3a(aawc, stam, tsz, t2, avc->m[i]);
+    }
+    // for(i=0;i<avc->vsz;++i) {
+    //     aawc->aaw[avc->n[i]]->cold = aawc->aaw[avc->n[i]]->cou;
+    // }
+    free_avc(avc);
+    return;
 }
 
 void freechainharr(snodm **stam, size_t tsz)
@@ -250,6 +320,8 @@ aw_c *crea_awc(unsigned initsz)
     aw_c *awc=malloc(sizeof(aw_c));
     awc->ab=initsz;
     awc->al=awc->ab;
+    awc->cou=0;
+    awc->cold=0;
     awc->aw=malloc(awc->ab*sizeof(w_c*));
     for(i=0;i<awc->ab;++i) 
         awc->aw[i]=crea_wc(CBUF);
@@ -262,6 +334,8 @@ void reall_awc(aw_c **awc, unsigned buf)
     aw_c *tawc=*awc;
     tawc->ab += buf;
     tawc->al=tawc->ab;
+    tawc->cou=0;
+    tawc->cold=0;
     tawc->aw=realloc(tawc->aw, tawc->ab*sizeof(aw_c*));
     for(i=tawc->ab-buf;i<tawc->ab;++i)
         tawc->aw[i]=crea_wc(CBUF);
@@ -442,79 +516,139 @@ int main(int argc, char *argv[])
         printf("Error. Pls supply argument (name of text file).\n");
         exit(EXIT_FAILURE);
     }
+#ifdef DBG2
+    printf("typeszs: aaw_c: %zu aw_c: %zu w_c: %zu\n", sizeof(aaw_c), sizeof(aw_c), sizeof(w_c));
+#endif
 
     aaw_c *aawc=processinpf(argv[1]);
+    printf("Numlines: %zu\n", aawc->numl); 
 
     char c;
     int i, k=0;
-    av_c *avc=crea_avc(GBUF);
-    while( (c=aawc->aaw[0]->aw[0]->w[k++]) != '\0')
-        app_avc(avc, c);
-    for(i=0;i<avc->vsz;++i)
-        putchar(avc->v[i]); 
-    printf("\n"); 
 
     unsigned htsz=givehtsz(aawc->numl);
     snodm **stam = hashnam(aawc, htsz);
     // prtchaharr(stam, htsz);
-    av_c *av2=NULL;
     char t[3]={0};
     size_t kk=0, j;
-    char *s=aawc->aaw[0]->aw[0]->w;
+    char *s2=aawc->aaw[0]->aw[0]->w;
     size_t sl=aawc->aaw[0]->aw[0]->lp1-1;
-    char *s2=malloc(sl*sizeof(char));
-    memcpy(s2, s, sl*sizeof(char));
-    for(j=0;j<14;++j) {  
-        // printf("start str: "); 
-        // for(i=0;i<sl;++i) 
-        //     putchar(s2[i]);
-        // printf("\n"); 
-        av2=crea_avc(GBUF);
-        kk=0;
-        for(i=0;i<sl-1;++i) {
-            t[0]=s2[kk++];
-            t[1]=s2[kk];
-            app_avc(av2, t[0]);
-            app_avc(av2, mu2(aawc, stam, htsz, t));
-            //app_avc(av2, t[1]);
-        }
-        app_avc(av2, s2[sl-1]);
-        sl=av2->vsz;
-        s2=realloc(s2, sl*sizeof(char));
-        memcpy(s2, av2->v, sl*sizeof(char));
-        printf("end str: "); 
-        for(i=0;i<sl;++i) 
-            putchar(s2[i]);
-        printf("\n"); 
-        free_avc(av2);
+    kk=0;
+    for(i=0;i<sl-1;++i) {
+        // don't use last char
+        t[0]=s2[kk++];
+        t[1]=s2[kk];
+        printf("uppinng %s\n", t); 
+        mu3(aawc, stam, htsz, t);
     }
-    freechainharr(stam, htsz);
-
-    size_t cou[10]={0};
-    for(i=0;i<sl;++i) {
-        switch(s2[i]) {
+    printf("aft init\n"); 
+    for(j=0;j<40;++j) {  
+        mu5a(aawc, stam, htsz);
+    }
+    printf("\n"); 
+    prtaawc2(aawc);
+    size_t *cou=calloc(10, sizeof(size_t));
+    for(i=2;i<aawc->numl;++i) {
+        switch(aawc->aaw[i]->aw[0]->w[0]) {
             case 'B':
-                cou[0]++; break;
+                cou[0]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'C':
-                cou[1]++; break;
+                cou[1]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'F':
-                cou[2]++; break;
+                cou[2]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'H':
-                cou[3]++; break;
+                cou[3]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'K':
-                cou[4]++; break;
+                cou[4]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'N':
-                cou[5]++; break;
+                cou[5]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'O':
-                cou[6]++; break;
+                cou[6]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'P':
-                cou[7]++; break;
+                cou[7]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'S':
-                cou[8]++; break;
+                cou[8]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
             case 'V':
-                cou[9]++; break;
+                cou[9]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+        }
+        switch(aawc->aaw[i]->aw[0]->w[1]) {
+            case 'B':
+                cou[0]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'C':
+                cou[1]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'F':
+                cou[2]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'H':
+                cou[3]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'K':
+                cou[4]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'N':
+                cou[5]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'O':
+                cou[6]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'P':
+                cou[7]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'S':
+                cou[8]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
+            case 'V':
+                cou[9]+=(aawc->aaw[i]->cou - aawc->aaw[i]->cold); break;
         }
     }
+    for(i=0;i<10;++i)
+        printf("%zu ", cou[i]);
+    printf("\n"); 
+    // putchar(aawc->aaw[0]->aw[0]->w[0]);
+    switch(aawc->aaw[0]->aw[0]->w[0]) {
+        case 'B':
+            cou[0]++; break;
+        case 'C':
+            cou[1]++; break;
+        case 'F':
+            cou[2]++; break;
+        case 'H':
+            cou[3]++; break;
+        case 'K':
+            cou[4]++; break;
+        case 'N':
+            cou[5]++; break;
+        case 'O':
+            cou[6]++; break;
+        case 'P':
+            cou[7]++; break;
+        case 'S':
+            cou[8]++; break;
+        case 'V':
+            cou[9]++; break;
+    }
+    // putchar(aawc->aaw[0]->aw[0]->w[aawc->aaw[0]->aw[0]->lp1-2]);
+    switch(aawc->aaw[0]->aw[0]->w[aawc->aaw[0]->aw[0]->lp1-2]) {
+        case 'B':
+            cou[0]++; break;
+        case 'C':
+            cou[1]++; break;
+        case 'F':
+            cou[2]++; break;
+        case 'H':
+            cou[3]++; break;
+        case 'K':
+            cou[4]++; break;
+        case 'N':
+            cou[5]++; break;
+        case 'O':
+            cou[6]++; break;
+        case 'P':
+            cou[7]++; break;
+        case 'S':
+            cou[8]++; break;
+        case 'V':
+            cou[9]++; break;
+    }
+    // now add 1 to first and last letters
+    for(i=0;i<10;++i)
+        cou[i]=cou[i]/2;
+    for(i=0;i<10;++i)
+        printf("%zu ", cou[i]);
+    printf("\n"); 
     size_t mx=0;
     size_t mn=0xFFFFFFFFFFFFFFFF;
     for(i=0;i<10;++i) {
@@ -523,14 +657,10 @@ int main(int argc, char *argv[])
         if(mx<cou[i])
             mx=cou[i];
     }
-    for(i=0;i<10;++i) 
-        printf("%zu ", cou[i]);
-    printf("\n"); 
     printf("max-min=%zu\n", mx-mn); 
 
     free_aawc(&aawc);
-    free_avc(avc);
-    free(s2);
+    free(cou);
 
     return 0;
 }
