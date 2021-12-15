@@ -20,7 +20,7 @@ typedef struct /* av_c, a vector fo simple integers*/
 void prt_avc(av_c *avc)
 {
     size_t i;
-    printf("av_c of size %i\n", avc->vsz);
+    printf("av_c of size %zu\n", avc->vsz);
     for(i=0;i<avc->vsz;++i)
         putchar(avc->v[i]);
     printf("\n"); 
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
         if(mx<cou[i])
             mx=cou[i];
     }
-    printf("max-min=%llu\n", mx-mn); 
+    printf("max-min=%zu\n", mx-mn); 
 
     free_aawc(&aawc);
     free_avc(avc);
