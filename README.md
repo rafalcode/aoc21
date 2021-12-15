@@ -60,4 +60,9 @@ Code and (particularly) learning points.
 * otherwise I had a very thorny time equating my "single pass" output (which I tried in reverse, and many other ways) to what was required.
 * I often fell to thinking that they've made a mistake ... which is possible but the correction would have come extremely quickly.
 * so yes, the propagation issue had me fairly flustered, I need to remember it's a question of couting the events and waiting till they go to zero.
-.
+* interesting thing about this one was how easy p2 was, but how hard p1 was.
+
+# Day 13, folding to obtain eight letter code
+* this was nasty not in the coding sense, but because it allowed some confusion between columns and rows, and the simple but often elusive calculation of the folded indices.
+* Also the simple example was not hugely difficult to get right, but there was a good chance of not getting the part 1 right.
+

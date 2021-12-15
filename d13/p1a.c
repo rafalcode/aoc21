@@ -451,7 +451,26 @@ int main(int argc, char *argv[])
     printf("proc %i %i %i %i\n", av2->m[0], av2->n[0], rmx, cmx);
     // optis2(avc);
     prt_avc2(avc);
-    proc_avc3(avc, av2->m[0], av2->n[0], cmx, rmx);
+    int r,c;
+    for(i=0;i<av2->vsz;++i) {
+        proc_avc3(avc, av2->m[i], av2->n[i], cmx, rmx);
+        if(av2->m[i]==1)
+            rmx=av2->n[i];
+        else
+            cmx=av2->n[i]; // yes you see the n either has the x fold or the y fold.
+        printf("print fold numb %i %i %i\n", i, avc->m[i], avc->n[i]);
+        k=0;
+        for(r=0;r<rmx;++r) {
+            for(c=0;c<cmx;++c) {
+                if((c==avc->m[k]) && (r==avc->n[k])) {
+                    putchar('#');
+                    k++;
+                } else
+                    putchar('.');
+            }
+            putchar('\n');
+        }
+    }
     prt_avc2(avc);
     // proc_avc2(avc, av2->m[1], av2->n[1], rmx, cmx);
     // prt_avc(avc);
